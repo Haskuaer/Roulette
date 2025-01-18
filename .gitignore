@@ -19,9 +19,3 @@ Thumbs.db
 
 # Specyficzne dla projektu
 Roulette.iml
-
-# DO NOT IGNORE
-/mvnw
-/mvnw.cmd
-/.mvn/wrapper/maven-wrapper.jar
-/.mvn/wrapper/maven-wrapper.properties
