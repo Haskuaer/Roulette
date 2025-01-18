@@ -1,6 +1,7 @@
 # Maven
 /client/target/
 /server/target/
+/out/
 
 # IntelliJ IDEA
 *.iml
