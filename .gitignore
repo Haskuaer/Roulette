@@ -1,0 +1,24 @@
+# Maven
+/client/target/
+/server/target/
+
+# IntelliJ IDEA
+*.iml
+.idea/
+
+# Maven Wrapper (opcjonalnie)
+.mvn/
+mvnw
+mvnw.cmd
+
+# Systemowe pliki tymczasowe
+.DS_Store
+Thumbs.db
+*.swp
+
+# Logi i pliki tymczasowe
+*.log
+*.tmp
+
+# Specyficzne dla projektu
+Roulette.iml
