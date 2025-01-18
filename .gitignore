@@ -2,15 +2,11 @@
 /client/target/
 /server/target/
 /out/
+/.mvn/wrapper/.cache/
 
 # IntelliJ IDEA
 *.iml
 .idea/
-
-# Maven Wrapper (opcjonalnie)
-.mvn/
-mvnw
-mvnw.cmd
 
 # Systemowe pliki tymczasowe
 .DS_Store
@@ -23,3 +19,9 @@ Thumbs.db
 
 # Specyficzne dla projektu
 Roulette.iml
+
+# DO NOT IGNORE
+/mvnw
+/mvnw.cmd
+/.mvn/wrapper/maven-wrapper.jar
+/.mvn/wrapper/maven-wrapper.properties
