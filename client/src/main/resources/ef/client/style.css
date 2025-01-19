@@ -51,6 +51,32 @@
     -fx-background-color: #e6e6e6;
     -fx-effect: dropshadow(gaussian, rgb(255, 102, 0, 0.7), 10, 0.5, 0, 0);
 }
+.board{
+    -fx-border-color: #cccccc;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+.board.odd{
+    -fx-background-color: #cc0000;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+.board.odd:hover Label{
+    -fx-text-fill: black;
+    -fx-effect: dropshadow(gaussian, rgb(26, 26, 26), 10, 0.5, 0, 0);
+}
+.board.even{
+    -fx-background-color: black;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+.board.even:hover Label{
+    -fx-text-fill: #cc0000;
+    -fx-effect: dropshadow(gaussian, rgb(153, 0, 0), 10, 0.5, 0, 0);
+}
+.board:hover{
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.5), 10, 0.5, 0, 0);
+}
 .gameBtn{
     -fx-background-color: #1a1a1a;
     -fx-border-color: gold;
