@@ -46,6 +46,7 @@ public class Launcher extends Application {
         sceneManager.showScene("login");
 
         stage.show();
+        sceneManager.centerStage(stage);
     }
 
     public static void main(String[] args) {
