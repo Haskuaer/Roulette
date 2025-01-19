@@ -35,6 +35,7 @@ public class Launcher extends Application {
         sceneManager.addScene("login", "/ef/client/login.fxml");
         sceneManager.addScene("register", "/ef/client/register.fxml");
         sceneManager.addScene("user-panel", "/ef/client/user-panel.fxml");
+        sceneManager.addScene("game-panel", "/ef/client/game-panel.fxml");
 
         //Setting stage
         stage.setTitle("Roulette");

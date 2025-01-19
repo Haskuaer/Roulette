@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import ef.client.controllers.LoginController;
 import ef.client.controllers.RegisterController;
 import ef.client.controllers.UserPanelController;
+import ef.client.controllers.GameController;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -68,6 +69,10 @@ public class SceneManager {
         } else if(controller instanceof UserPanelController userPanelController) {
             userPanelController.setSceneManager(this);
             userPanelController.setStage(stage);
+            System.out.println("Stage passed to UserPanelController: " + stage);
+        } else if(controller instanceof GameController gameController) {
+            gameController.setSceneManager(this);
+            gameController.setStage(stage);
             System.out.println("Stage passed to UserPanelController: " + stage);
         }
     }
