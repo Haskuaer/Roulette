@@ -35,6 +35,7 @@ public class SceneManager {
                 Scene scene = new Scene(root);
                 scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/ef/client/style.css")).toExternalForm());
                 stage.setScene(scene);
+                centerStage(stage);
 
                 Object controller = fxmlLoader.getController();
                 if(controller == null){
@@ -51,6 +52,21 @@ public class SceneManager {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void centerStage(Stage stage){
+
+        double screenWidth = javafx.stage.Screen.getPrimary().getVisualBounds().getWidth();
+        double screenHeight = javafx.stage.Screen.getPrimary().getVisualBounds().getHeight();
+
+        double stageWidth = stage.getWidth();
+        double stageHeight = stage.getHeight();
+
+        double x = (screenWidth - stageWidth) / 2;
+        double y = (screenHeight - stageHeight) / 2;
+
+        stage.setX(x);
+        stage.setY(y);
     }
 
     public Object getController(String name) {
