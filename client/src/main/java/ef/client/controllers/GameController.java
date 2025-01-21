@@ -41,7 +41,7 @@ public class GameController {
         this.stage = stage;
         System.out.println("UserPanelController stage: " + stage);
 
-        initializeBoard();
+        //initializeBoard();
         initializeImages();
 
         //Window functions
@@ -62,9 +62,9 @@ public class GameController {
                 int col = index % cols;
 
                 if((row + col) % 2 == 0){
-                    pane.getStyleClass().add("even");
+                    pane.getStyleClass().add("red");
                 } else {
-                    pane.getStyleClass().add("odd");
+                    pane.getStyleClass().add("black");
                 }
 
                 index++;
