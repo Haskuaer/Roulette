@@ -1,6 +1,7 @@
 package ef.client;
 
 //import com.almasb.fxgl.net.Client;
+import ef.client.util.ClientSocketHolder;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -23,6 +24,7 @@ public class Launcher extends Application {
         //Test server connection
         try {
             clientSocket = new ClientSocket("localhost", 12345);
+            ClientSocketHolder.setClientSocket(clientSocket);
             // clientSocket.close();
         } catch (IOException e) {
             System.err.println("Could not connect to the server: " + e.getMessage());

@@ -15,15 +15,16 @@ import java.util.Objects;
 
 public class SceneManager {
 
+    private ClientSocket clientSocket;
     private final Stage stage;
     private final HashMap<String, String> scenes = new HashMap<>();
     private final HashMap<String, Object> controllers = new HashMap<>();
 
     public SceneManager(Stage stage) { this.stage = stage; }
 
-    public void addScene(String name, String fxmlFile) {
-        scenes.put(name, fxmlFile);
-    }
+    public void setClientSocket(ClientSocket clientSocket) { this.clientSocket = clientSocket; }
+
+    public void addScene(String name, String fxmlFile) { scenes.put(name, fxmlFile); }
 
     public void showScene(String name) {
         String fxmlFile = scenes.get(name);
