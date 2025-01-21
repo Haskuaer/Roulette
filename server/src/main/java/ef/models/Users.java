@@ -5,7 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import java.util.UUID;
 
 @Entity
-public class User {
+public class Users {
 
     @Id
     @GeneratedValue(generator = "uuid2")  // Definicja generatora UUID
@@ -17,8 +17,8 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    public User() {}
-    public User(String username, String password) { this.username = username; this.password = password; }
+    public Users() {}
+    public Users(String username, String password) { this.username = username; this.password = password; }
 
     public UUID getId(){ return id; }
     public void setId(UUID id){ this.id = id; }
