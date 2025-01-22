@@ -464,12 +464,30 @@
             <RowConstraints minHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <ImageView fx:id="token10" fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" styleClass="token" GridPane.rowIndex="2" />
-            <ImageView fx:id="token25" fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" styleClass="token" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <ImageView fx:id="token50" fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" styleClass="token" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-            <ImageView fx:id="token100" fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" styleClass="token" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-            <ImageView fx:id="token500" fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" styleClass="token" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-            <ImageView fx:id="token1000" fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" styleClass="token" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+            <ImageView fx:id="token10" fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" styleClass="token" GridPane.rowIndex="2">
+               <image>
+                  <Image url="@images/tokens_v2/1.png" />
+               </image></ImageView>
+            <ImageView fx:id="token25" fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" styleClass="token" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <image>
+                  <Image url="@images/tokens_v2/2.png" />
+               </image></ImageView>
+            <ImageView fx:id="token50" fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" styleClass="token" GridPane.columnIndex="2" GridPane.rowIndex="2">
+               <image>
+                  <Image url="@images/tokens_v2/3.png" />
+               </image></ImageView>
+            <ImageView fx:id="token100" fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" styleClass="token" GridPane.columnIndex="3" GridPane.rowIndex="2">
+               <image>
+                  <Image url="@images/tokens_v2/4.png" />
+               </image></ImageView>
+            <ImageView fx:id="token500" fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" styleClass="token" GridPane.columnIndex="4" GridPane.rowIndex="2">
+               <image>
+                  <Image url="@images/tokens_v2/5.png" />
+               </image></ImageView>
+            <ImageView fx:id="token1000" fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" styleClass="token" GridPane.columnIndex="5" GridPane.rowIndex="2">
+               <image>
+                  <Image url="@images/tokens_v2/6.png" />
+               </image></ImageView>
          </children>
       </GridPane>
       <GridPane layoutX="75.0" layoutY="550.0">

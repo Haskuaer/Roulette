@@ -56,10 +56,10 @@ public class LoginController {
         goRegisterBtn.setOnAction(event -> { sceneManager.showScene("register"); });
 
         //Sign up (no data)
-        //loginBtn.setOnAction(event -> { sceneManager.showScene("user-panel"); });
+        loginBtn.setOnAction(event -> { sceneManager.showScene("user-panel"); });
 
         //Sign up
-        loginBtn.setOnAction(event -> { handleLogin(); });
+        //loginBtn.setOnAction(event -> { handleLogin(); });
     }
 
     private void handleLogin(){

@@ -42,12 +42,16 @@ public class GameController {
         System.out.println("UserPanelController stage: " + stage);
 
         //initializeBoard();
-        initializeImages();
+        //initializeImages();
 
         //Window functions
         windowController.dragWindow(rootPane, stage);
         windowController.minimizeWindow(stage, minimizeBtn);
         windowController.closeWindow(stage, exitBtn);
+
+        token10.setOnMousePressed(event -> {
+            System.out.println(token10.getImage());
+        });
     }
 
     private void initializeBoard(){
