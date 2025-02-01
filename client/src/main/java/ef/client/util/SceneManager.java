@@ -3,15 +3,15 @@ package ef.client.util;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-import ef.client.controllers.LoginController;
-import ef.client.controllers.RegisterController;
-import ef.client.controllers.UserPanelController;
-import ef.client.controllers.GameController;
+import ef.client.controllers.*;
+import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.UUID;
 
 public class SceneManager {
 
@@ -91,6 +91,42 @@ public class SceneManager {
             gameController.setSceneManager(this);
             gameController.setStage(stage);
             System.out.println("Stage passed to UserPanelController: " + stage);
+//        } else if(controller instanceof TopUpController topUpController) {
+//            topUpController.setSceneManager(this);
+//            topUpController.setStage(stage);
+//            System.out.println("Stage passed to UserPanelController: " + stage);
+       }
+    }
+
+    public void showPopupScene(String name, UserPanelController userPanelController) {
+        String fxmlFile = scenes.get(name);
+        if (fxmlFile != null) {
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFile));
+                Parent root = fxmlLoader.load();
+
+                Stage popupStage = new Stage();
+                popupStage.setTitle("Add Funds");
+                popupStage.setScene(new Scene(root));
+                popupStage.initStyle(StageStyle.UNDECORATED);
+                popupStage.setResizable(false);
+                popupStage.initModality(Modality.APPLICATION_MODAL);
+
+                Object controller = fxmlLoader.getController();
+                if (controller instanceof TopUpController topUpController) {
+                    topUpController.setStage(popupStage);
+                    topUpController.setUserPanelController(userPanelController);
+                    System.out.println("Stage passed to TopUpController: " + popupStage);
+                }
+
+                popupStage.showAndWait();
+
+            } catch (IOException e) {
+                System.out.println("Error loading FXML: " + fxmlFile);
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Scene name not found: " + name);
         }
     }
 }

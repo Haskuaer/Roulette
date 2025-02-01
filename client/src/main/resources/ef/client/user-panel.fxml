@@ -46,7 +46,7 @@
         </rowConstraints>
          <children>
               <Label prefHeight="20.0" prefWidth="190.0" text="Balance" />
-            <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefWidth="80.0" text="0" textAlignment="RIGHT" GridPane.columnIndex="1" />
+            <Label fx:id="balanceLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefWidth="80.0" text="0" textAlignment="RIGHT" GridPane.columnIndex="1" />
             <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefWidth="80.0" text="0" textAlignment="RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label prefHeight="20.0" prefWidth="190.0" text="Summary balance:" GridPane.rowIndex="1" />
          </children>
@@ -124,7 +124,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button mnemonicParsing="false" prefWidth="80.0" styleClass="userMenuBtn" text="TOP UP">
+            <Button fx:id="topUpBtn" mnemonicParsing="false" prefWidth="80.0" styleClass="userMenuBtn" text="TOP UP">
                <GridPane.margin>
                   <Insets left="5.0" />
                </GridPane.margin>

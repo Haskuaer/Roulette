@@ -21,7 +21,7 @@
                 <Button fx:id="minimizeBtn" layoutX="300.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="50.0" styleClass="minimizeBtn" text="_" textAlignment="CENTER" />
             </children>
         </Pane>
-        <TextField fx:id="username" layoutX="125.0" layoutY="150.0" prefHeight="25.0" prefWidth="150.0" />
+        <TextField fx:id="usernameTxt" layoutX="125.0" layoutY="150.0" prefHeight="25.0" prefWidth="150.0" />
         <Label layoutX="125.0" layoutY="190.0" prefHeight="25.0" prefWidth="150.0" text="Password:">
             <font>
                 <Font size="15.0" />
@@ -32,13 +32,13 @@
                 <Font size="15.0" />
             </font>
         </Label>
-        <PasswordField fx:id="password" layoutX="125.0" layoutY="220.0" prefHeight="25.0" prefWidth="150.0" />
+        <PasswordField fx:id="passwordTxt" layoutX="125.0" layoutY="220.0" prefHeight="25.0" prefWidth="150.0" />
         <Label layoutX="125.0" layoutY="260.0" prefHeight="25.0" prefWidth="150.0" text="Confirm password:">
             <font>
                 <Font size="15.0" />
             </font>
         </Label>
-        <PasswordField fx:id="confirmedPassword" layoutX="125.0" layoutY="290.0" prefHeight="25.0" prefWidth="150.0" />
+        <PasswordField fx:id="confirmedPasswordTxt" layoutX="125.0" layoutY="290.0" prefHeight="25.0" prefWidth="150.0" />
         <Label alignment="CENTER" contentDisplay="CENTER" layoutY="60.0" prefHeight="40.0" prefWidth="400.0" styleClass="titleLabel" text="Registration" textAlignment="CENTER">
             <font>
                 <Font size="25.0" />

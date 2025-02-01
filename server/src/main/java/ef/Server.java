@@ -1,9 +1,8 @@
 package ef;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import ef.actions.LoginRequest;
 import ef.dao.UserDao;
-import ef.models.Users;
+import ef.handlers.ClientHandler;
+import ef.models.User;
 import ef.util.DatabaseConnection;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -19,6 +18,7 @@ public class Server {
     private static UserDao userDao;
 
     public static void main(String[] args) {
+
         try (ServerSocket serverSocket = new ServerSocket(12345)) {
 
             System.out.println("Server is running on port 12345...");
@@ -27,18 +27,18 @@ public class Server {
 
             SessionFactory factory = new Configuration()
                     .configure("hibernate.cfg.xml")
-                    .addAnnotatedClass(Users.class)
+                    .addAnnotatedClass(User.class)
                     .buildSessionFactory();
 
-//
             userDao = new UserDao(factory);
 
-            try{
-                Users test = new Users("test", "test");
-                userDao.addUser(test);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+//            try{
+//                User test = new User("test", "test");
+//                userDao.addUser(test);
+//                userDao.setBalance(test.getId(), 100.0);
+//            } catch (IllegalAccessException e) {
+//                e.printStackTrace();
+//            }
 
 //            try(PreparedStatement preparedStatement = db.prepareStatement("INSERT INTO users (username, password) VALUES (?, ?);")){
 //                preparedStatement.setString(1, "test");
@@ -49,44 +49,17 @@ public class Server {
 //                e.printStackTrace();
 //            }
 
-
             while (true) {
                 Socket clientSocket = serverSocket.accept();
+                ClientHandler clientHandler = new ClientHandler(clientSocket, userDao);
                 System.out.println("Client connected: " + clientSocket.getInetAddress());
-
-                // Reading
-                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                //PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
-                String receivedJson = in.readLine();
-                System.out.println("Received: " + receivedJson);
-
-                //JSON handling
-                ObjectMapper objectMapper = new ObjectMapper();
-                LoginRequest loginRequest = objectMapper.readValue(receivedJson, LoginRequest.class);
-
-                //Login handling
-                String response = handleLogin(loginRequest);
-
-                //Sending response
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                out.println(response);
-
-                clientSocket.close();
+                Thread thread = new Thread(clientHandler);
+                thread.start();
             }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static String handleLogin(LoginRequest loginRequest) {
-
-        System.out.println("Handling login for: " + loginRequest.getUsername());
-
-        Users user = userDao.getUserByUsername(loginRequest.getUsername());
-
-        if(user != null && user.getPassword().equals(loginRequest.getPassword())) { return "success"; }
-        else { return "error"; }
     }
 }

@@ -9,5 +9,5 @@ module ef.client {
 
     exports ef.client;
     exports ef.client.controllers;
-    exports ef.client.actions;
+    exports ef.client.requests;
 }
