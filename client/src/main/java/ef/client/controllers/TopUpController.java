@@ -59,7 +59,7 @@ public class TopUpController {
 
         topUpBtn.setOnAction(event -> { handleAddFounds(); });
 
-        backBtn.setOnAction(event -> stage.close());
+        backBtn.setOnAction(event -> this.stage.close() );
     }
 
     @FXML
