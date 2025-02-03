@@ -18,6 +18,7 @@ public class TopUpController {
     private SceneManager sceneManager;
     private final WindowController windowController = new WindowController();
     private UserPanelController userPanelController;
+    private GameController gameController;
 
     @FXML
     private AnchorPane rootPane;
@@ -30,7 +31,8 @@ public class TopUpController {
     @FXML
     private Button topUpBtn, backBtn;
 
-    public void serUserPanelController(UserPanelController userPanelController) { this.userPanelController = userPanelController; }
+    public GameController getGameController() { return gameController; }
+    public void setGameController(GameController gameController) { this.gameController = gameController; }
 
     public UserPanelController getUserPanelController() { return userPanelController; }
     public void setUserPanelController(UserPanelController userPanelController) { this.userPanelController = userPanelController; }
@@ -81,8 +83,10 @@ public class TopUpController {
                 System.out.println("Funds added successfully!");
                 if (userPanelController != null) {
                     userPanelController.updateBalance();  // Aktualizacja balansu
+                } else if (gameController != null){
+                    gameController.updateBalance();
                 } else {
-                    System.out.println("UserPanelController is null!");
+                    System.out.println("Controller is null!");
                 }
                 stage.close();
             } else {

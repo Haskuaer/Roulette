@@ -91,14 +91,10 @@ public class SceneManager {
             gameController.setSceneManager(this);
             gameController.setStage(stage);
             System.out.println("Stage passed to UserPanelController: " + stage);
-//        } else if(controller instanceof TopUpController topUpController) {
-//            topUpController.setSceneManager(this);
-//            topUpController.setStage(stage);
-//            System.out.println("Stage passed to UserPanelController: " + stage);
        }
     }
 
-    public void showPopupScene(String name, UserPanelController userPanelController) {
+    public void showPopupScene(String name, Object controllerToSet) {
         String fxmlFile = scenes.get(name);
         if (fxmlFile != null) {
             try {
@@ -113,10 +109,13 @@ public class SceneManager {
                 popupStage.initModality(Modality.APPLICATION_MODAL);
 
                 Object controller = fxmlLoader.getController();
-                if (controller instanceof TopUpController topUpController) {
+                if (controller instanceof TopUpController topUpController && controllerToSet instanceof UserPanelController) {
                     topUpController.setStage(popupStage);
-                    topUpController.setUserPanelController(userPanelController);
+                    topUpController.setUserPanelController((UserPanelController) controllerToSet);
                     System.out.println("Stage passed to TopUpController: " + popupStage);
+                } else if (controller instanceof TopUpController topUpController && controllerToSet instanceof GameController) {
+                    topUpController.setStage(popupStage);
+                    topUpController.setGameController((GameController) controllerToSet);
                 }
 
                 popupStage.showAndWait();

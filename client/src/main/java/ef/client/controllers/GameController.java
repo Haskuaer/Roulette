@@ -1,8 +1,11 @@
 package ef.client.controllers;
 
+import ef.client.services.BalanceInfo;
+import ef.client.util.UserID_Holder;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -12,9 +15,12 @@ import javafx.stage.Stage;
 import ef.client.util.SceneManager;
 import ef.client.util.WindowController;
 
+import java.util.UUID;
+
 public class GameController {
 
     private Stage stage;
+    private UUID userId = UserID_Holder.getUserId();
     private SceneManager sceneManager;
     private final WindowController windowController = new WindowController();
 
@@ -25,12 +31,9 @@ public class GameController {
     @FXML
     private Button minimizeBtn;
     @FXML
-    private GridPane board;
+    private Label balanceLabel;
     @FXML
-    private ImageView token10, token25, token50, token100, token500, token1000;
-    @FXML
-    private  ImageView[] tokens = new ImageView[6];
-    private final Image[] images = new Image[6];
+    private Button topUpBtn;
 
     public void setSceneManager(SceneManager sceneManager) {
         this.sceneManager = sceneManager;
@@ -39,55 +42,25 @@ public class GameController {
     public void setStage(Stage stage){
 
         this.stage = stage;
-        System.out.println("UserPanelController stage: " + stage);
+        System.out.println("GameController stage: " + stage);
 
-        //initializeBoard();
-        //initializeImages();
+        updateBalance();
 
         //Window functions
         windowController.dragWindow(rootPane, stage);
         windowController.minimizeWindow(stage, minimizeBtn);
         windowController.closeWindow(stage, exitBtn);
 
-        token10.setOnMousePressed(event -> {
-            System.out.println(token10.getImage());
-        });
+        topUpBtn.setOnAction(event -> { sceneManager.showPopupScene("top-up", this);});
     }
 
-    private void initializeBoard(){
+    public void updateBalance(){
+        BalanceInfo balanceInfo = new BalanceInfo();
+        String balance = balanceInfo.balanceInfo(userId);
 
-        int cols = 13;
-        int index = 0;
+        System.out.println("Upadated balance");
 
-        for(Node node:board.getChildren()){
-            if(node instanceof Pane pane){
-
-                int row = index / cols;
-                int col = index % cols;
-
-                if((row + col) % 2 == 0){
-                    pane.getStyleClass().add("red");
-                } else {
-                    pane.getStyleClass().add("black");
-                }
-
-                index++;
-            }
-        }
-    }
-
-    private void initializeImages(){
-
-        tokens[0] = token10;
-        tokens[1] = token25;
-        tokens[2] = token50;
-        tokens[3] = token100;
-        tokens[4] = token500;
-        tokens[5] = token1000;
-
-        for(int i = 0; i < images.length; i++){
-            images[i] = new Image(getClass().getResource("/ef/client/images/tokens/"+i+".png").toExternalForm());
-            tokens[i].setImage(images[i]);
-        }
+        if(balance != null){ balanceLabel.setText(balance); }
+        else { System.out.println("No data"); }
     }
 }
