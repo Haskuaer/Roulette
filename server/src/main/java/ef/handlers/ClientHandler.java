@@ -31,6 +31,7 @@ public class ClientHandler implements Runnable {
 
         AuthService authService = new AuthService(userDao);
         AccountService accountService = new AccountService(userDao);
+        GameHandler gameHandler = new GameHandler();
 
         try {
             while(true) {
@@ -62,7 +63,6 @@ public class ClientHandler implements Runnable {
                             jsonResponse = new Response(status, null);
                             response = objectMapper.writeValueAsString(jsonResponse);
                             break;
-
                         }
                         status = "success";
                         jsonResponse = new Response(status, userId);
@@ -102,6 +102,20 @@ public class ClientHandler implements Runnable {
                         status = accountService.addFunds(userId, amount);
                         jsonResponse = new Response(status, userId);
                         response = objectMapper.writeValueAsString(jsonResponse);
+                        break;
+                    case "play":
+                        GameSession session = GameHandler.findOrCreateSession();
+                        if (session != null)
+                        {
+                            session.addPlayer(clientSocket);
+                            jsonResponse = new Response("success", session.getSessionId());
+                            response = objectMapper.writeValueAsString(jsonResponse);
+                        }
+                        else
+                        {
+                            jsonResponse = new Response("error", null);
+                            response = objectMapper.writeValueAsString(jsonResponse);
+                        }
                         break;
                     default:
                         System.out.println("Unknown action: " + action);
