@@ -1,6 +1,7 @@
 package ef.client.controllers;
 
 import ef.client.services.BalanceInfo;
+import ef.client.services.Play;
 import ef.client.util.ClientSocket;
 import ef.client.util.UserID_Holder;
 import javafx.fxml.FXML;
@@ -55,9 +56,22 @@ public class UserPanelController {
         windowController.minimizeWindow(stage, minimizeBtn);
         windowController.closeWindow(stage, exitBtn);
 
-        //topUpBtn.setOnAction(event -> { handleTopUp(); });
+        playBtn.setOnAction(event ->
+        {
+            Play play = new Play();
+            String status = play.findGame();
 
-        playBtn.setOnAction(event -> { sceneManager.showScene("game-panel"); });
+            if (status == null) { System.out.println("Couldn't find game"); }
+
+            if (status.equals("success"))
+            {
+                sceneManager.showScene("game-panel");
+            }
+            else
+            {
+                System.out.println("Error");
+            }
+        });
 
         topUpBtn.setOnAction(event -> { sceneManager.showPopupScene("top-up", this); });
     }
