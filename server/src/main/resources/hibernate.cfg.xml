@@ -26,5 +26,7 @@
 
         <!-- Specify annotated class -->
         <mapping class="ef.models.User"/> <!-- Twój model User -->
+        <mapping class="ef.models.GameSession"/>
+
     </session-factory>
 </hibernate-configuration>
