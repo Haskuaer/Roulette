@@ -1,24 +1,36 @@
 package ef.services;
 
+import ef.dao.GameSessionDao;
+import ef.models.GameSession;
+
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class GameSession
+public class GameSessionService
 {
-    private final UUID sessionId;
-    private final List<Socket> players;
-    private static final int MAX_PLAYERS = 4;
+    private final GameSessionDao gameSessionDao;
 
-    public GameSession(){
-        this.sessionId = UUID.randomUUID();
-        this.players = new ArrayList<>();
+    public GameSessionService(GameSessionDao gameSessionDao){ this.gameSessionDao = gameSessionDao; }
+
+    public GameSession findOrCreateSession()
+    {
+        GameSession session = gameSessionDao.findAvailableSession();
+
+        if(session == null){ session = gameSessionDao.createSession(); }
+        return session;
     }
 
-    public UUID getSessionId(){ return sessionId; }
-
-    public synchronized boolean isFull(){ return players.size() >= MAX_PLAYERS; }
-
-    public synchronized void addPlayer(Socket player){ players.add(player); }
+    public boolean addPlayerToSession(GameSession session)
+    {
+        if(!session.isFull())
+        {
+            session.setPlayersCount(session.getPlayersCount() + 1);
+            if(session.getPlayersCount() == session.getMaxPlayers()) { session.setStatus("active"); }
+            gameSessionDao.updateSession(session);
+            return true;
+        }
+        return false;
+    }
 }
