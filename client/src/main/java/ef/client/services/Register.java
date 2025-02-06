@@ -21,20 +21,28 @@ public class Register extends Service {
 
     public Register(){}
 
-    public String handleLogin(TextField usernameTxt, PasswordField passwordTxt){
+    public String handleRegister(TextField usernameTxt, PasswordField passwordTxt, PasswordField confirmedPasswordTxt){
 
         String username = usernameTxt.getText();
         String password = passwordTxt.getText();
+        String confirmedPassword = confirmedPasswordTxt.getText();
 
-        if(username.isEmpty() || password.isEmpty())
+        if(username.isEmpty() || password.isEmpty() || confirmedPassword.isEmpty())
         {
             System.out.println("Empty");
+            return "error";
+        }
+
+        if(!password.equals(confirmedPassword))
+        {
+            System.out.println("Passwords do not match");
+            return "error";
         }
 
         try
         {
             ObjectMapper objectMapper = new ObjectMapper();
-            LoginRequest loginRequest = new LoginRequest("login", username, password);
+            LoginRequest loginRequest = new LoginRequest("register", username, password);
             String json = objectMapper.writeValueAsString(loginRequest);
             System.out.println("Sending json: " + json);
 
@@ -46,7 +54,7 @@ public class Register extends Service {
 
             if(response == null || response.isBlank()){
                 System.out.println("Empty");
-                return null;
+                return "error";
             }
 
             JsonNode jsonNode = objectMapper.readTree(response);
@@ -57,6 +65,9 @@ public class Register extends Service {
             }
 
             String status = jsonNode.get("status").asText();
+
+            if(status.isEmpty()){ return "error"; }
+
             UUID userId = null;
 
             if (jsonNode.has("userId") && !jsonNode.get("userId").isNull()) {
