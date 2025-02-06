@@ -3,7 +3,9 @@ package ef.handlers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ef.dao.GameSessionDao;
+import ef.dao.RoundDao;
 import ef.models.GameSession;
+import ef.models.User;
 import ef.requests.AddFundsRequest;
 import ef.requests.AuthRequest;
 import ef.requests.LoginRequest;
@@ -23,11 +25,13 @@ public class ClientHandler implements Runnable {
     private final Socket clientSocket;
     private final UserDao userDao;
     private final GameSessionDao gameSessionDao;
+    private final RoundDao roundDao;
 
-    public ClientHandler(Socket socket, UserDao userDao, GameSessionDao gameSessionDao) {
+    public ClientHandler(Socket socket, UserDao userDao, GameSessionDao gameSessionDao, RoundDao roundDao) {
         this.clientSocket = socket;
         this.userDao = userDao;
         this.gameSessionDao = gameSessionDao;
+        this.roundDao = roundDao;
     }
 
     @Override
@@ -35,7 +39,7 @@ public class ClientHandler implements Runnable {
 
         AuthService authService = new AuthService(userDao);
         AccountService accountService = new AccountService(userDao);
-        GameSessionService gameSessionService = new GameSessionService(gameSessionDao);
+        GameSessionService gameSessionService = new GameSessionService(gameSessionDao, roundDao);
         //GameHandler gameHandler = new GameHandler();
 
         try {
@@ -110,7 +114,8 @@ public class ClientHandler implements Runnable {
                         break;
                     case "play":
                         GameSession session = gameSessionService.findOrCreateSession();
-                        status = gameSessionService.addPlayerToSession(session) ? "success" : "reject";
+                        User user = userDao.getUserById(userId);
+                        status = gameSessionService.startSession(user, session) ? "success" : "reject";
                         System.out.println(status);
                         jsonResponse = new Response(status, userId);
                         System.out.println("Sending response: " + jsonResponse);
