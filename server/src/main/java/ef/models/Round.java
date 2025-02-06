@@ -2,43 +2,55 @@ package ef.models;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
-import java.util.UUID;
+
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Entity
-public class Rounds {
+@Table(name = "rounds")
+public class Round {
 
     @Id
-    @GeneratedValue(generator = "uuid2")  // Definicja generatora UUID
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")  // Generator UUID2
     @Column(name = "id", columnDefinition = "BINARY(16)")  // Przechowywanie UUID jako BINARY(16)
     private UUID id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
-    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "session_id", nullable = false, referencedColumnName = "id")
     private GameSession session;
 
+    @ManyToMany
+    @JoinTable(
+            name = "rounds_users",
+            joinColumns =  @JoinColumn(name = "round_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> users = new HashSet<>();
+
     @Column(name = "status")
     private String status;
-    @Column(name = "bet_amount")
-    private double bet_amount;
-    @Column(name = "bet_type")
-    private String bet_type;
-    @Column(name = "bet_value")
-    private double bet_value;
-    @Column(name = "round_result")
-    private String round_result;
-    @Column(name = "win_amount")
-    private double win_amount;
+
+    @Column(name = "createAt")
+    private LocalDateTime createAt;
+
+    @OneToMany(mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<RoundBet> bets = new HashSet<>();
+
+    public Round() { this.id = UUID.randomUUID(); }
+    public Round(GameSession session)
+    {
+        this.id = UUID.randomUUID();
+        this.session = session;
+        this.status = "waiting";
+        this.createAt = LocalDateTime.now();
+        this.bets = new HashSet<>();
+    }
 
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public Set<User> getUsers() { return users; }
+    public void addUser(User user) { users.add(user); }
+    public void removeUser(User user) { users.remove(user); }
 
     public GameSession getSession() { return session; }
     public void setSession(GameSession session) { this.session = session; }
@@ -46,18 +58,10 @@ public class Rounds {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public double getBalance() { return bet_amount; }
-    public void setBalance(double balance) { this.bet_amount = balance; }
+    public LocalDateTime getCreateAt() { return createAt; }
+    public void setCreateAt(LocalDateTime createAt) { this.createAt = createAt; }
 
-    public String getBetType() { return bet_type; }
-    public void setBetType(String betType) { this.bet_type = betType; }
-
-    public double getBetValue() { return bet_value; }
-    public void setBetValue(double betValue) { this.bet_value = betValue; }
-
-    public String getRoundResult() { return round_result; }
-    public void setRoundResult(String roundResult) { this.round_result = roundResult; }
-
-    public double getWinAmount() { return win_amount; }
-    public void setWinAmount(double winAmount) { this.win_amount = winAmount; }
+    public Set<RoundBet> getBets() { return bets; }
+    public void addBet(RoundBet bet) { bets.add(bet); bet.setRound(this); }
+    public void removeBet(RoundBet bet) { bets.remove(bet); }
 }

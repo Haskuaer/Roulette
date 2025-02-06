@@ -3,9 +3,10 @@ package ef.models;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
+@Table(name = "game_sessions")
 public class GameSession
 {
     @Id
@@ -19,7 +20,10 @@ public class GameSession
     private int playersCount = 0;
     @Column(name = "max_players")
     private int maxPlayers = 4;
-
+    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Round> rounds = new HashSet<>();
+    @ManyToMany(mappedBy = "sessions")
+    private Set<User> users = new HashSet<>();
 
     public GameSession(){ this.id = UUID.randomUUID(); }
 
@@ -38,5 +42,13 @@ public class GameSession
     public int getMaxPlayers() { return maxPlayers; }
     public void setMaxPlayers(int max_players) { this.maxPlayers = max_players; }
 
+    public Set<Round> getRounds() { return rounds; }
+    public void setRounds(Set<Round> rounds) { this.rounds = rounds; }
+
+    public Set<User> getUsers() { return users; }
+    public void addUser(User user) { this.users.add(user); }
+
+    public void addRound(Round round) { this.rounds.add(round); }
+    public void removeRound(Round round) { this.rounds.remove(round); }
     public boolean isFull(){ return playersCount == maxPlayers; }
 }

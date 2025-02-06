@@ -2,7 +2,8 @@ package ef.models;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
-import java.util.UUID;
+
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -19,6 +20,15 @@ public class User {
     private String password;
     @Column(name = "balance")
     private double balance;
+    @ManyToMany(mappedBy = "users")
+    private Set<Round> rounds = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "session_users",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "session_id")
+    )
+    private Set<GameSession> sessions = new HashSet<>();
 
     public User() {}
     public User(String username, String password) { this.username = username; this.password = password; }
@@ -34,4 +44,10 @@ public class User {
 
     public double getBalance(){ return balance; }
     public void setBalance(double balance){ this.balance = balance; }
+
+    public Set<Round> getRounds(){ return rounds; }
+    public void setRounds(Set<Round> rounds){ this.rounds = rounds; }
+
+    public Set<GameSession> getSessions(){ return sessions; }
+    public void setSessions(Set<GameSession> sessions){ this.sessions = sessions; }
 }
