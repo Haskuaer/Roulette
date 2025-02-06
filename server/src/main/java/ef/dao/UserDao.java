@@ -4,7 +4,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import ef.models.User;
-import org.hibernate.type.StandardBasicTypes;
 
 import java.util.UUID;
 
@@ -13,6 +12,20 @@ public class UserDao {
     private SessionFactory sessionFactory;
 
     public UserDao(SessionFactory sessionFactory) { this.sessionFactory = sessionFactory; }
+
+    public User getUserById(UUID id) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        Query<User> query = session.createQuery("from User where id = :id", User.class);
+        query.setParameter("id", id);
+        User user = query.uniqueResult();
+
+        session.getTransaction().commit();
+        session.close();
+
+        return user;
+    }
 
     public User checkCreds(String username, String password) {
         Session session = sessionFactory.openSession();
