@@ -1,5 +1,6 @@
 package ef.dao;
 import ef.models.GameSession;
+import ef.models.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -14,18 +15,20 @@ public class GameSessionDao {
 
     public GameSession findAvailableSession()
     {
-        if (sessionFactory == null) {
-            throw new IllegalStateException("SessionFactory is not initialized!");
-        }
-
         try(Session session = sessionFactory.openSession())
         {
-            List<GameSession> sessions = session.createQuery(
-                    "FROM GameSession WHERE status = 'waiting' AND playersCount < maxPlayers",
-                    GameSession.class
-            ).getResultList();
+            GameSession gameSession = session.createQuery("""
+                SELECT gs FROM GameSession gs
+                LEFT JOIN FETCH gs.users
+                LEFT JOIN FETCH gs.rounds
+                WHERE gs.status = :status AND gs.playersCount < gs.maxPlayers
+                """, GameSession.class
+            )
+                    .setParameter("status", "waiting")
+                    .setMaxResults(1)
+                    .uniqueResult();
 
-            return sessions.isEmpty() ? null : sessions.get(0);
+            return gameSession;
         }
     }
 
