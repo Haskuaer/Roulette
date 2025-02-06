@@ -1,9 +1,10 @@
 package ef;
 
 import ef.dao.GameSessionDao;
+import ef.dao.RoundDao;
 import ef.dao.UserDao;
 import ef.handlers.ClientHandler;
-import ef.models.User;
+import ef.models.*;
 import ef.util.DatabaseConnection;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -18,6 +19,7 @@ public class Server {
 
     private static UserDao userDao;
     private static GameSessionDao gameSessionDao;
+    private static RoundDao roundDao;
 
     public static void main(String[] args) {
 
@@ -30,10 +32,15 @@ public class Server {
             SessionFactory factory = new Configuration()
                     .configure("hibernate.cfg.xml")
                     .addAnnotatedClass(User.class)
+                    .addAnnotatedClass(GameSession.class)
+                    .addAnnotatedClass(Round.class)
+                    .addAnnotatedClass(RoundBet.class)
                     .buildSessionFactory();
 
             userDao = new UserDao(factory);
             gameSessionDao = new GameSessionDao(factory);
+            roundDao = new RoundDao(factory);
+
 
 //            try{
 //                User test = new User("test", "test");
@@ -54,7 +61,7 @@ public class Server {
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                ClientHandler clientHandler = new ClientHandler(clientSocket, userDao, gameSessionDao);
+                ClientHandler clientHandler = new ClientHandler(clientSocket, userDao, gameSessionDao, roundDao);
                 System.out.println("Client connected: " + clientSocket.getInetAddress());
                 Thread thread = new Thread(clientHandler);
                 thread.start();
