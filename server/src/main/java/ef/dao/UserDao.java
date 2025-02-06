@@ -14,6 +14,21 @@ public class UserDao {
 
     public UserDao(SessionFactory sessionFactory) { this.sessionFactory = sessionFactory; }
 
+    public User checkCreds(String username, String password) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        Query<User> query = session.createQuery("from User where username = :username AND password = :password", User.class);
+        query.setParameter("username", username);
+        query.setParameter("password", password);
+        User user = query.uniqueResult();
+
+        session.getTransaction().commit();
+        session.close();
+
+        return user;
+    }
+
     public User getUserByUsername(String username) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
