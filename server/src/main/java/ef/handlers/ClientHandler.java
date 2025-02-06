@@ -2,6 +2,8 @@ package ef.handlers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ef.dao.GameSessionDao;
+import ef.models.GameSession;
 import ef.requests.AddFundsRequest;
 import ef.requests.AuthRequest;
 import ef.requests.LoginRequest;
@@ -20,10 +22,12 @@ public class ClientHandler implements Runnable {
 
     private final Socket clientSocket;
     private final UserDao userDao;
+    private final GameSessionDao gameSessionDao;
 
-    public ClientHandler(Socket socket, UserDao userDao) {
+    public ClientHandler(Socket socket, UserDao userDao, GameSessionDao gameSessionDao) {
         this.clientSocket = socket;
         this.userDao = userDao;
+        this.gameSessionDao = gameSessionDao;
     }
 
     @Override
@@ -31,7 +35,8 @@ public class ClientHandler implements Runnable {
 
         AuthService authService = new AuthService(userDao);
         AccountService accountService = new AccountService(userDao);
-        GameHandler gameHandler = new GameHandler();
+        GameSessionService gameSessionService = new GameSessionService(gameSessionDao);
+        //GameHandler gameHandler = new GameHandler();
 
         try {
             while(true) {
@@ -104,18 +109,12 @@ public class ClientHandler implements Runnable {
                         response = objectMapper.writeValueAsString(jsonResponse);
                         break;
                     case "play":
-                        GameSession session = GameHandler.findOrCreateSession();
-                        if (session != null)
-                        {
-                            session.addPlayer(clientSocket);
-                            jsonResponse = new Response("success", session.getSessionId());
-                            response = objectMapper.writeValueAsString(jsonResponse);
-                        }
-                        else
-                        {
-                            jsonResponse = new Response("error", null);
-                            response = objectMapper.writeValueAsString(jsonResponse);
-                        }
+                        GameSession session = gameSessionService.findOrCreateSession();
+                        status = gameSessionService.addPlayerToSession(session) ? "success" : "reject";
+                        System.out.println(status);
+                        jsonResponse = new Response(status, userId);
+                        System.out.println("Sending response: " + jsonResponse);
+                        response = objectMapper.writeValueAsString(jsonResponse);
                         break;
                     default:
                         System.out.println("Unknown action: " + action);

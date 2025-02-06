@@ -1,5 +1,6 @@
 package ef;
 
+import ef.dao.GameSessionDao;
 import ef.dao.UserDao;
 import ef.handlers.ClientHandler;
 import ef.models.User;
@@ -16,6 +17,7 @@ import java.sql.SQLException;
 public class Server {
 
     private static UserDao userDao;
+    private static GameSessionDao gameSessionDao;
 
     public static void main(String[] args) {
 
@@ -31,6 +33,7 @@ public class Server {
                     .buildSessionFactory();
 
             userDao = new UserDao(factory);
+            gameSessionDao = new GameSessionDao(factory);
 
 //            try{
 //                User test = new User("test", "test");
@@ -51,7 +54,7 @@ public class Server {
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                ClientHandler clientHandler = new ClientHandler(clientSocket, userDao);
+                ClientHandler clientHandler = new ClientHandler(clientSocket, userDao, gameSessionDao);
                 System.out.println("Client connected: " + clientSocket.getInetAddress());
                 Thread thread = new Thread(clientHandler);
                 thread.start();
