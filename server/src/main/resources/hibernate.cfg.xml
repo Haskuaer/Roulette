@@ -27,6 +27,8 @@
         <!-- Specify annotated class -->
         <mapping class="ef.models.User"/> <!-- Twój model User -->
         <mapping class="ef.models.GameSession"/>
+        <mapping class="ef.models.Round"/>
+        <mapping class="ef.models.RoundBet"/>
 
     </session-factory>
 </hibernate-configuration>
