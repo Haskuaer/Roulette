@@ -1,6 +1,7 @@
 package ef.client.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ef.client.requests.RegisterRequest;
+import ef.client.services.Register;
 import ef.client.util.ClientSocketHolder;
 import ef.client.util.WindowController;
 import javafx.fxml.FXML;
@@ -32,7 +33,7 @@ public class RegisterController {
     @FXML
     private PasswordField passwordTxt;
     @FXML
-    private TextField confirmedPasswordTxt;
+    private PasswordField confirmedPasswordTxt;
     @FXML
     private Button goLoginBtn;
     @FXML
@@ -58,33 +59,11 @@ public class RegisterController {
         goLoginBtn.setOnAction(event -> { sceneManager.showScene("login"); });
 
         //Register
-        registerBtn.setOnAction((event -> { handleRegister(); }));
-    }
-
-    private void handleRegister(){
-
-        String username = usernameTxt.getText();
-        String password = passwordTxt.getText();
-        String confirmedPassword = confirmedPasswordTxt.getText();
-
-        if(username.isEmpty() || password.isEmpty() || confirmedPassword.isEmpty()){
-            System.out.println("Empty");
-        }
-
-        try{
-            ObjectMapper objectMapper = new ObjectMapper();
-            RegisterRequest registerRequest = new RegisterRequest("register", username, password, confirmedPassword);
-            String json = objectMapper.writeValueAsString(registerRequest);
-
-            //Sending request
-            clientSocket.sendMessage(json);
-
-            //Wait for response
-            String response = clientSocket.receiveMessage();
-            if("success".equals(response)){ sceneManager.showScene("user-panel"); }
-            else { System.out.println("Error: " + response); }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        registerBtn.setOnAction((event ->
+        {
+            Register register = new Register();
+            String status = register.handleRegister(usernameTxt, passwordTxt, confirmedPasswordTxt);
+            if(status.equals("success")){ sceneManager.showScene("user-panel"); }
+        }));
     }
 }
