@@ -19,7 +19,7 @@ public class AuthService {
         System.out.println("Handling login for: " + loginRequest.getUsername());
         try
         {
-            User user = userDao.getUserByUsername(loginRequest.getUsername());
+            User user = userDao.checkCreds(loginRequest.getUsername(), loginRequest.getPassword());
             if(user == null)
             {
                 System.out.println("User not found!");
