@@ -1,6 +1,7 @@
 package ef.client.controllers;
 
 import ef.client.services.BalanceInfo;
+import ef.client.util.GameStatusHolder;
 import ef.client.util.UserID_Holder;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -11,6 +12,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import ef.client.util.SceneManager;
 import ef.client.util.WindowController;
@@ -21,6 +25,7 @@ public class GameController {
 
     private Stage stage;
     private UUID userId = UserID_Holder.getUserId();
+    private String status = GameStatusHolder.getGameStatus();
     private SceneManager sceneManager;
     private final WindowController windowController = new WindowController();
 
@@ -45,6 +50,7 @@ public class GameController {
         System.out.println("GameController stage: " + stage);
 
         updateBalance();
+        handleOverlay(status);
 
         //Window functions
         windowController.dragWindow(rootPane, stage);
@@ -62,5 +68,25 @@ public class GameController {
 
         if(balance != null){ balanceLabel.setText(balance); }
         else { System.out.println("No data"); }
+    }
+
+    public StackPane createOverlay()
+    {
+        StackPane overlay = new StackPane();
+        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+        Text waitingText = new Text("Waiting...");
+        waitingText.setFont(Font.font(24));
+        overlay.getChildren().add(waitingText);
+        return overlay;
+    }
+
+    public void handleOverlay(String status)
+    {
+        if(status.equals("waiting"))
+        {
+            StackPane overlay = createOverlay();
+            rootPane.getChildren().add(overlay);
+            rootPane.setDisable(true);
+        }
     }
 }
