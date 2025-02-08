@@ -18,6 +18,11 @@ public class RoundBet
     @JoinColumn(name = "round_id", nullable = false)
     private Round round;
 
+    //BELONGED USER
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     //BET FIELD
     @Column(name = "bet_type", nullable = false)
     private String betType;
@@ -42,6 +47,10 @@ public class RoundBet
     //ROUND GETTER/SETTER
     public Round getRound() { return round; }
     public void setRound(Round round) { this.round = round; }
+
+    //USER GETTER/SETTER
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
     //TYPE GETTER/SETTER
     public String getBetType() { return betType; }
