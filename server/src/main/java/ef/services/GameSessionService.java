@@ -21,23 +21,25 @@ public class GameSessionService
     public GameSession findOrCreateSession()
     {
         GameSession session = gameSessionDao.findAvailableSession();
-
         if(session == null){ session = gameSessionDao.createSession(); }
         return session;
     }
 
-    public boolean startSession(User user, GameSession session)
+    public String sessionStatus(GameSession session) { return session.getStatus(); }
+
+    public void setSessionStatus(GameSession session)
     {
-        if(!session.isFull())
-        {
-            session.setPlayersCount(session.getPlayersCount() + 1);
-            if(session.getRounds().isEmpty()) { Round round = new Round(session); session.addRound(round); }
-            if(session.getPlayersCount() == session.getMaxPlayers()) { session.setStatus("active"); }
-            session.addUser(user);
-            session.getRounds();
-            gameSessionDao.updateSession(session);
-            return true;
-        }
-        return false;
+        if(session.isFull()){ session.setStatus("active"); }
     }
+
+//        if(!session.isFull())
+//        {
+//            if(session.getRounds().isEmpty()) { Round round = new Round(session); session.addRound(round); }
+//            if(session.getPlayersCount() == session.getMaxPlayers()) { session.setStatus("active"); }
+//            session.addUser(user);
+//            session.getRounds();
+//            gameSessionDao.updateSession(session);
+//            return true;
+//        }
+//        return false;
 }

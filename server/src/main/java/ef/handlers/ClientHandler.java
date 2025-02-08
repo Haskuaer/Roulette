@@ -113,10 +113,16 @@ public class ClientHandler implements Runnable {
                         response = objectMapper.writeValueAsString(jsonResponse);
                         break;
                     case "play":
+                        //Checks if there's a session, if not creates one
                         GameSession session = gameSessionService.findOrCreateSession();
+                        //Get User which requested that
                         User user = userDao.getUserById(userId);
-                        status = gameSessionService.startSession(user, session) ? "success" : "reject";
-                        System.out.println(status);
+                        //Add User to session
+                        gameSessionDao.addUser(user, session);
+                        //Update session status
+                        gameSessionService.setSessionStatus(session);
+                        //Get session status
+                        status = gameSessionService.sessionStatus(session);
                         jsonResponse = new Response(status, userId);
                         System.out.println("Sending response: " + jsonResponse);
                         response = objectMapper.writeValueAsString(jsonResponse);
