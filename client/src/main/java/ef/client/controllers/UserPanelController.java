@@ -63,7 +63,8 @@ public class UserPanelController {
 
             if (status == null) { System.out.println("Couldn't find game"); }
 
-            if (status.equals("success"))
+            assert status != null;
+            if (status.equals("active") || status.equals("waiting"))
             {
                 sceneManager.showScene("game-panel");
             }
