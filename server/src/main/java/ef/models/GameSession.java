@@ -16,7 +16,7 @@ public class GameSession
 
     //SESSION STATUS
     @Column(name = "status")
-    private String status = "waiting";  //waiting, active, finished
+    private String status;  //waiting, active, finished
 
     //SESSION CREATION TIME
     @Column(name = "createdAt")
@@ -28,7 +28,7 @@ public class GameSession
 
     //MAX PLAYERS PER SESSION
     @Column(name = "max_players")
-    private int maxPlayers = 4;
+    private int maxPlayers = 3;
 
     //SESSION USERS
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -39,7 +39,7 @@ public class GameSession
     private Set<Round> rounds = new HashSet<>();
 
     //CONSTRUCTORS
-    public GameSession(){ this.id = UUID.randomUUID(); }
+    public GameSession(){ this.id = UUID.randomUUID(); this.status = "active"; }
 
     //ID GETTER/SETTER
     public UUID getId() { return id; }
