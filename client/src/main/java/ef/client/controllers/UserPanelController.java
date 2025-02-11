@@ -21,7 +21,7 @@ import java.util.UUID;
 
 public class UserPanelController {
 
-    private ClientSocket clientSOcket;
+    private ClientSocket clientSocket;
     private UUID userId = UserID_Holder.getUserId();
     private Stage stage;
     private SceneManager sceneManager;
@@ -64,14 +64,8 @@ public class UserPanelController {
             if (status == null) { System.out.println("Couldn't find game"); }
 
             assert status != null;
-            if (status.equals("active") || status.equals("waiting"))
-            {
-                sceneManager.showScene("game-panel");
-            }
-            else
-            {
-                System.out.println("Error");
-            }
+            if (status.equals("success")) { sceneManager.showScene("game-panel"); }
+            else { System.out.println("Error"); }
         });
 
         topUpBtn.setOnAction(event -> { sceneManager.showPopupScene("top-up", this); });
