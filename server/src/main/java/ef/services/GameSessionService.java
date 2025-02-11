@@ -10,6 +10,7 @@ public class GameSessionService {
     private final RoundDao roundDao;
     private final UserDao userDao;
 
+    //CONSTRUCTOR
     public GameSessionService(GameSessionDao gameSessionDao, UserDao userDao, RoundDao roundDao)
     {
         this.gameSessionDao = gameSessionDao;
@@ -17,6 +18,7 @@ public class GameSessionService {
         this.userDao = userDao;
     }
 
+    //MANAGE SESSION JOIN/CREATE
     public GameSession findOrCreateSession()
     {
         GameSession session = gameSessionDao.findAvailableSession();
