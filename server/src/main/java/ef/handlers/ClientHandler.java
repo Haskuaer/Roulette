@@ -1,5 +1,6 @@
 package ef.handlers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ef.dao.GameSessionDao;
@@ -39,12 +40,13 @@ public class ClientHandler implements Runnable {
 
         AuthService authService = new AuthService(userDao);
         AccountService accountService = new AccountService(userDao);
-        GameSessionService gameSessionService = new GameSessionService(gameSessionDao, roundDao);
+        GameSessionService gameSessionService = new GameSessionService(gameSessionDao, userDao, roundDao);
         //GameHandler gameHandler = new GameHandler();
 
-        try {
-            while(true) {
-
+        try
+        {
+            while(true)
+            {
                 // Reading
                 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -57,91 +59,234 @@ public class ClientHandler implements Runnable {
                 String action = jsonNode.get("action").asText();
 
                 String status;
-                UUID userId = null;
+                UUID userId;
                 Response jsonResponse;
                 String response = null;
 
                 //Handling request
                 switch (action) {
-                    case "login":
-                        LoginRequest loginRequest = objectMapper.readValue(receivedJson, LoginRequest.class);
-                        userId = authService.handleLogin(loginRequest);
-                        if(userId == null)
-                        {
-                            status = "reject";
-                            jsonResponse = new Response(status, null);
+                    case "login": {
+                        //Get request value
+                        LoginRequest request = parseRequest(objectMapper, receivedJson, LoginRequest.class);
+                        if (request == null) {
+                            System.out.println("RQ: Empty request value");
+                            //Sending negative response
+                            jsonResponse = new Response("error", null);
                             response = objectMapper.writeValueAsString(jsonResponse);
                             break;
                         }
-                        status = "success";
-                        jsonResponse = new Response(status, userId);
-                        response = objectMapper.writeValueAsString(jsonResponse);
-                        break;
-                    case "register":
-                        RegisterRequest registerRequest = objectMapper.readValue(receivedJson, RegisterRequest.class);
-                        userId = authService.handleRegister(registerRequest);
-                        if(userId == null)
-                        {
-                            status = "reject";
-                            response = status;
+                        //Get userId
+                        userId = authService.handleLogin(request);
+                        //System.out.println("UserID: " + userId); CHECK
+                        if (userId == null) {
+                            System.out.println("SV: Couldn't find user");
+                            //Sending negative response
+                            jsonResponse = new Response("error", null);
+                            response = objectMapper.writeValueAsString(jsonResponse);
                             break;
                         }
-                        status = "success";
-                        jsonResponse = new Response(status, userId);
+                        //Sending positive response
+                        jsonResponse = new Response("success", userId);
                         response = objectMapper.writeValueAsString(jsonResponse);
                         break;
-                    case "userInfo":
-                        AuthRequest userInfo = objectMapper.readValue(receivedJson, AuthRequest.class);
-                        userId = userInfo.getUserId();
+                    }
+                    case "register": {
+                        //Get request value
+                        RegisterRequest request = parseRequest(objectMapper, receivedJson, RegisterRequest.class);
+                        if (request == null) {
+                            System.out.println("RQ: Empty request value");
+                            //Sending negative response
+                            jsonResponse = new Response("error", null);
+                            response = objectMapper.writeValueAsString(jsonResponse);
+                            break;
+                        }
+                        //Get userId
+                        userId = authService.handleRegister(request);
+                        if (userId == null) {
+                            System.out.println("SV: User already exists");
+                            //Sending negative response
+                            jsonResponse = new Response("error", null);
+                            response = objectMapper.writeValueAsString(jsonResponse);
+                            break;
+                        }
+                        //Sending positive response
+                        jsonResponse = new Response("success", userId);
+                        response = objectMapper.writeValueAsString(jsonResponse);
+                        break;
+                    }
+                    case "userInfo": {
+                        //Get request value
+                        AuthRequest request = parseRequest(objectMapper, receivedJson, AuthRequest.class);
+                        if (request == null)
+                        {
+                            System.out.println("Empty request value");
+                            //Send negative response
+                            jsonResponse = new Response("error", null);
+                            response = objectMapper.writeValueAsString(jsonResponse);
+                            break;
+                        }
+                        //Get userId
+                        userId = request.getUserId();
+                        if (userId == null)
+                        {
+                            System.out.println("RQ: Couldn't get ID value");
+                            //Send negative response
+                            jsonResponse = new Response("error", null);
+                            response = objectMapper.writeValueAsString(jsonResponse);
+                            break;
+                        }
+                        //Get username
                         String username = accountService.getUsername(userId);
-                        UsernameResponse usernameResponse = new UsernameResponse("success", userInfo.getUserId(), username);
+                        if (username == null)
+                        {
+                            System.out.println("SV: Couldn't get username value");
+                            //Send negative response
+                            jsonResponse = new Response("error", userId);
+                            response = objectMapper.writeValueAsString(jsonResponse);
+                            break;
+                        }
+                        //Send positive response
+                        UsernameResponse usernameResponse = new UsernameResponse("success", request.getUserId(), username);
                         response = objectMapper.writeValueAsString(usernameResponse);
                         break;
-                    case "balanceInfo":
-                        AuthRequest balanceInfo = objectMapper.readValue(receivedJson, AuthRequest.class);
-                        userId = balanceInfo.getUserId();
+                    }
+                    case "balanceInfo": {
+                        //Get request value
+                        AuthRequest request = parseRequest(objectMapper, receivedJson, AuthRequest.class);
+                        if (request == null)
+                        {
+                            System.out.println("RQ: Empty request value");
+                            //Send negative response
+                            jsonResponse = new Response("error", null);
+                            response = objectMapper.writeValueAsString(jsonResponse);
+                            break;
+                        }
+                        //Get userId
+                        userId = request.getUserId();
+                        if (userId == null)
+                        {
+                            System.out.println("RQ: Couldn't get ID value");
+                            //Send negative response
+                            jsonResponse = new Response("error", null);
+                            response = objectMapper.writeValueAsString(jsonResponse);
+                            break;
+                        }
+                        //Get balance value
                         double balance = accountService.getBalance(userId);
-                        BalanceResponse balanceResponse = new BalanceResponse("success", balanceInfo.getUserId(), balance);
+                        //Send positive response
+                        BalanceResponse balanceResponse = new BalanceResponse("success", request.getUserId(), balance);
                         response = objectMapper.writeValueAsString(balanceResponse);
                         break;
-                    case "addFunds":
-                        AddFundsRequest addFundsRequest = objectMapper.readValue(receivedJson, AddFundsRequest.class);
-                        userId = addFundsRequest.getUserId();
-                        double amount = addFundsRequest.getAmount();
+                    }
+                    case "addFunds": {
+                        //Get request value
+                        AddFundsRequest request = parseRequest(objectMapper, receivedJson, AddFundsRequest.class);
+                        if (request == null)
+                        {
+                            System.out.println("RQ: Empty request value");
+                            //Send negative response
+                            jsonResponse = new Response("error", null);
+                            response = objectMapper.writeValueAsString(jsonResponse);
+                            break;
+                        }
+                        //Get userId
+                        userId = request.getUserId();
+                        if (userId == null)
+                        {
+                            System.out.println("RQ: Couldn't get ID value");
+                            //Send negative response
+                            jsonResponse = new Response("error", null);
+                            response = objectMapper.writeValueAsString(jsonResponse);
+                            break;
+                        }
+                        //Get amount value
+                        double amount = request.getAmount();
+                        //Set status
                         status = accountService.addFunds(userId, amount);
-                        jsonResponse = new Response(status, userId);
+                        if (status == null || status.equals("error"))
+                        {
+                            System.out.println("SV: Couldn't set balance");
+                            //Send negative response
+                            jsonResponse = new Response("error", userId);
+                            response = objectMapper.writeValueAsString(jsonResponse);
+                            break;
+                        }
+                        jsonResponse = new Response("success", userId);
                         response = objectMapper.writeValueAsString(jsonResponse);
                         break;
-                    case "play":
+                    }
+                    case "play": {
+                        //Get request values
+                        AuthRequest request = parseRequest(objectMapper, receivedJson, AuthRequest.class);
+                        if (request == null)
+                        {
+                            System.out.println("RQ: Empty request given");
+                            //Sending negative response
+                            jsonResponse = new Response("error", null);
+                            response = objectMapper.writeValueAsString(jsonResponse);
+                            break;
+                        }
+                        //Get userId
+                        userId = request.getUserId();
+                        if (userId == null)
+                        {
+                            System.out.println("RQ: Couldn't get ID value");
+                            //Sending negative response
+                            jsonResponse = new Response("error", null);
+                            response = objectMapper.writeValueAsString(jsonResponse);
+                            break;
+                        }
                         //Checks if there's a session, if not creates one
                         GameSession session = gameSessionService.findOrCreateSession();
+                        if (session == null) {
+                            System.out.println("SV: Couldn't load session");
+                            //Sending negative response
+                            jsonResponse = new Response("error", userId);
+                            response = objectMapper.writeValueAsString(jsonResponse);
+                            break;
+                        }
                         //Get User which requested that
                         User user = userDao.getUserById(userId);
+                        if (user == null) {
+                            System.out.println("DAO: Couldn't load user");
+                            //Sending negative response
+                            jsonResponse = new Response("error", userId);
+                            response = objectMapper.writeValueAsString(jsonResponse);
+                            break;
+                        }
                         //Add User to session
-                        gameSessionDao.addUser(user, session);
-                        //Update session status
-                        gameSessionService.setSessionStatus(session);
-                        //Get session status
-                        status = gameSessionService.sessionStatus(session);
-                        jsonResponse = new Response(status, userId);
-                        System.out.println("Sending response: " + jsonResponse);
+                        status = gameSessionDao.addUser(user, session);
+                        if (status.equals("error")) {
+                            System.out.println("DAO: Couldn't add user to session");
+                            //Sending negative response
+                            jsonResponse = new Response("error", userId);
+                            response = objectMapper.writeValueAsString(jsonResponse);
+                            break;
+                        }
+                        //Sending response
+                        jsonResponse = new Response("success", userId);
                         response = objectMapper.writeValueAsString(jsonResponse);
                         break;
-                    default:
-                        System.out.println("Unknown action: " + action);
+                    }
+                    default: { System.out.println("Unknown action: " + action); }
                 }
 
-                //Sending response
                 out.println(response);
-            }
-        } catch (IOException e) {
-            System.out.println("Connection problems: " + e.getMessage());
-        } finally {
-            try {
-                clientSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+                out.flush();
             }
         }
+        catch (IOException e) { System.out.println("Connection problems: " + e.getMessage()); }
+        finally
+        {
+            try { clientSocket.close(); }
+            catch (IOException e) { e.printStackTrace(); }
+        }
+    }
+
+    //PARSING REQUESTS
+    public <T> T parseRequest(ObjectMapper objectMapper, String receivedJson, Class<T> requestType)
+    {
+        try { return objectMapper.readValue(receivedJson, requestType); }
+        catch (JsonProcessingException e) { System.out.println("RQ: Error parsing request: " + e.getMessage()); return null; }
     }
 }
