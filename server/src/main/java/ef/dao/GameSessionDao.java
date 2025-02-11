@@ -55,22 +55,32 @@ public class GameSessionDao {
     }
 
     //SESSION ADD USER
-    public void addUser(User user, GameSession gameSession)
+    public String addUser(User user, GameSession gameSession)
     {
         Transaction transaction = null;
-        try (Session session = sessionFactory.openSession())
+        Session session = null;
+        try
         {
+            session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            gameSession.addUser(user);
+            gameSession.getUsers().add(user);
             gameSession.setPlayersCount(gameSession.getPlayersCount() + 1);
             session.merge(gameSession);
             transaction.commit();
+            return "success";
         }
         catch(Exception e)
         {
             if(transaction != null) { transaction.rollback(); }
             e.printStackTrace();
         }
+        finally
+        {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+        return "error";
     }
 
     //SESSION ADD ROUND
@@ -99,11 +109,10 @@ public class GameSessionDao {
             GameSession gameSession = session.createQuery("""
                 SELECT gs FROM GameSession gs
                 LEFT JOIN FETCH gs.users
-                LEFT JOIN FETCH gs.rounds
                 WHERE gs.status = :status AND gs.playersCount < gs.maxPlayers
                 """, GameSession.class
                     )
-                    .setParameter("status", "waiting")
+                    .setParameter("status", "active")
                     .setMaxResults(1)
                     .uniqueResult();
 
