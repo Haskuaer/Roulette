@@ -14,7 +14,6 @@ import javafx.scene.control.TextField;
 import java.io.IOException;
 import java.util.UUID;
 
-import static ef.client.util.GameStatusHolder.setGameStatus;
 import static ef.client.util.UserID_Holder.getUserId;
 import static ef.client.util.UserID_Holder.setUserId;
 
@@ -54,16 +53,8 @@ public class Play extends Service {
 
             String status = jsonNode.get("status").asText();
 
-            if("active".equals(status) || "waiting".equals(status))
-            {
-                setGameStatus(status);
-                return status;
-            }
-            else
-            {
-                System.out.println("Error");
-                return status;
-            }
+            if("success".equals(status)) { return status; }
+            else { System.out.println("Error"); return status; }
 
         } catch (IOException e)
         {
