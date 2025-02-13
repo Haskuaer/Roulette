@@ -22,6 +22,8 @@ Services: Class package for handling logic of the request/response
 
 Util: Package for supporting classes such as DB connection
 
+Resources: Hibernate settings and dummy db
+
 CLIENT:
 
 Launcher: Starts app
